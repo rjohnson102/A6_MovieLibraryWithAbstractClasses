@@ -5,7 +5,7 @@ using System.Text;
 
 namespace A6_MovieLibraryWithAbstractClasses
 {
-    public class FileRepo
+    public class FileRepo : IRepository
     {
         public string Path { get; set; }
 

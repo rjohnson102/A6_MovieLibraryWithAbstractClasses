@@ -5,7 +5,8 @@ namespace A6_MovieLibraryWithAbstractClasses
     class Program
     {
         static MediaList mediaList = new MediaList();
-        static FileRepo movieFile = new FileRepo("movies.csv");        
+        static FileRepo movieFile = new FileRepo("movies.csv");
+        static JSONFile jsonFile = new JSONFile("media.json");
         static void Main(string[] args)
         {
             
@@ -21,13 +22,14 @@ namespace A6_MovieLibraryWithAbstractClasses
             Console.WriteLine("1. List all Movies");
             Console.WriteLine("2. Write Movies to File");
             Console.WriteLine("3. List Media by Type");
+            Console.WriteLine("4. Write Media to JSON File");
 
             ConsoleKey input = Console.ReadKey().Key;
 
             switch (input)
             {
                 case ConsoleKey.D1:
-                    movieFile.ReadFile(mediaList, typeof(Movie));
+                    jsonFile.ReadFile(mediaList, typeof(Movie));
                     PrintMenu();
                     break;
                 case ConsoleKey.D2:
@@ -38,6 +40,13 @@ namespace A6_MovieLibraryWithAbstractClasses
                 case ConsoleKey.D3:
                     ConsoleKey type = PromptMediaFields();
                     ListTypes(type);
+                    PrintMenu();
+                    break;
+                case ConsoleKey.D4:
+                    string[] temp = new string[3];
+                    Movie jsonMovie = new Movie(0, "", temp);
+                    jsonFile.WritetoFile(mediaList, jsonMovie);
+                    Console.WriteLine("\nFile Successfully Written!");
                     PrintMenu();
                     break;
             }
@@ -58,20 +67,21 @@ namespace A6_MovieLibraryWithAbstractClasses
             string genresString = "";
             while (isEntering)
             {
-                Console.WriteLine("Press Enter to Continue, Escape to Stop...");
+                Console.WriteLine("\nPress Enter to Continue, Escape to Stop...");
                 ConsoleKey readIn = Console.ReadKey().Key;
-                while (readIn != ConsoleKey.Enter || readIn != ConsoleKey.Escape)
+                while (readIn == ConsoleKey.Enter || readIn == ConsoleKey.Escape)
                 {
-                    Console.WriteLine("Press Enter to Continue, Escape to Stop...");
-                    readIn = Console.ReadKey().Key;
+                    
                     if (readIn == ConsoleKey.Enter)
                     {
                         Console.WriteLine("Genre: ");
                         genresString += Console.ReadLine() + ",";
+                        break;
                     }
                     else
                     {
                         isEntering = false;
+                        break;
                     }
                 }
             }
