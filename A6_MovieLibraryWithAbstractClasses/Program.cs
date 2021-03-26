@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace A6_MovieLibraryWithAbstractClasses
 {
@@ -8,8 +9,7 @@ namespace A6_MovieLibraryWithAbstractClasses
         static FileRepo movieFile = new FileRepo("movies.csv");
         static JSONFile jsonFile = new JSONFile("media.json");
         static void Main(string[] args)
-        {
-            
+        {                
             mediaList.PopulateFromMovieList();
             mediaList.PopulateFromShowList();
             mediaList.PopulateFromVideoList();
@@ -23,13 +23,14 @@ namespace A6_MovieLibraryWithAbstractClasses
             Console.WriteLine("2. Write Movies to File");
             Console.WriteLine("3. List Media by Type");
             Console.WriteLine("4. Write Media to JSON File");
+            Console.WriteLine("5. Search By:");
 
             ConsoleKey input = Console.ReadKey().Key;
 
             switch (input)
             {
                 case ConsoleKey.D1:
-                    jsonFile.ReadFile(mediaList, typeof(Movie));
+                    jsonFile.ReadFile(mediaList, typeof(Media));
                     PrintMenu();
                     break;
                 case ConsoleKey.D2:
@@ -49,13 +50,32 @@ namespace A6_MovieLibraryWithAbstractClasses
                     Console.WriteLine("\nFile Successfully Written!");
                     PrintMenu();
                     break;
+                case ConsoleKey.D5:
+                    Console.WriteLine("\n1. Title");
+                    Console.WriteLine("2. Genre");
+                    ConsoleKey tempKey = Console.ReadKey().Key;
+                    switch (tempKey)
+                    {
+                        case ConsoleKey.D1:
+                            Console.WriteLine("\nEnter Title:");
+                            string title = Console.ReadLine();
+                            mediaList.SearchByTitle(title);                            
+                            break;
+                        case ConsoleKey.D2:
+                            Console.WriteLine("\nEnter Genre:");
+                            var genre = Console.ReadLine();
+                            mediaList.SearchByGenre(genre);                            
+                            break;
+                    }
+                    PrintMenu();
+                    break;
             }
         }
 
         public static Movie PromptMediaAdd()
         {
             int id = 0;
-            foreach (Media media in mediaList.mediaList)
+            foreach (Media media in mediaList.medias)
             {
                 id = media.id;
             }

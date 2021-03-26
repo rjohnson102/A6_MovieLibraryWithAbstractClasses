@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Json.Net;
+using System.Linq;
 
 namespace A6_MovieLibraryWithAbstractClasses
 {
@@ -18,9 +19,13 @@ namespace A6_MovieLibraryWithAbstractClasses
         public void ReadFile(MediaList mediaList, Type type)
         {
             Console.WriteLine();
-            foreach (Media m in mediaList.mediaList)
+            foreach (Media m in mediaList.medias)
             {
                 if (m.GetType() == type)
+                {
+                    Console.WriteLine(m.Display());
+                }
+                else if(m.GetType().IsSubclassOf(type) == true)
                 {
                     Console.WriteLine(m.Display());
                 }
@@ -35,13 +40,13 @@ namespace A6_MovieLibraryWithAbstractClasses
 
             using (StreamWriter outputFile = new StreamWriter(jsonfile.Path))
             {
-                foreach (Media media in mediaList.mediaList)
+                foreach (Media media in mediaList.medias)
                 {
                     var temp = JsonNet.Serialize(media);
                     outputFile.WriteLine(temp);
                 }
                 outputFile.Close();
             }
-        }
+        }       
     }
 }

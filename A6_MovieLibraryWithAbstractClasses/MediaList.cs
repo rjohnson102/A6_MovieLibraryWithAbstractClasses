@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Linq;
+using System.Collections;
 
 namespace A6_MovieLibraryWithAbstractClasses
 {
-    public class MediaList
+    public class MediaList : IEnumerable
     {
-        public List<Media> mediaList { get; set; }
+        public List<Media> medias { get; set; }
         FileRepo movieFile = new FileRepo("movies.csv");
         FileRepo showFile = new FileRepo("shows.csv");
         FileRepo videoFile = new FileRepo("videos.csv");
@@ -16,7 +17,7 @@ namespace A6_MovieLibraryWithAbstractClasses
 
         public MediaList()
         {
-            mediaList = new List<Media>();
+            medias = new List<Media>();
         }
 
         public void PopulateFromMovieList()
@@ -39,7 +40,7 @@ namespace A6_MovieLibraryWithAbstractClasses
 
                         int movieID = Convert.ToInt32(temp[0]);
                         Movie movie = new Movie(movieID, temp[1], genres);
-                        mediaList.Add(movie);                        
+                        medias.Add(movie);                        
                     }
                 }
             }
@@ -60,13 +61,13 @@ namespace A6_MovieLibraryWithAbstractClasses
                     {
 
                         var temp = line.Split(',');
-
+                        string[] genres = temp[5].Split('|');
                         int id = Convert.ToInt32(temp[0]);
                         int season = Convert.ToInt32(temp[2]);
                         int episode = Convert.ToInt32(temp[3]);
                         string[] writers = temp[4].Split('|');
-                        Show show = new Show(id, temp[1], season, episode, writers);
-                        mediaList.Add(show);
+                        Show show = new Show(id, temp[1], season, episode, writers, genres);
+                        medias.Add(show);
                     }
                 }
             }
@@ -87,7 +88,7 @@ namespace A6_MovieLibraryWithAbstractClasses
                     {
 
                         var temp = line.Split(',');
-
+                        string[] genres = temp[5].Split('|');
                         int id = Convert.ToInt32(temp[0]);
                         int length = Convert.ToInt32(temp[3]);
                         string[] regionsTemp = temp[4].Split('|');
@@ -96,11 +97,44 @@ namespace A6_MovieLibraryWithAbstractClasses
                         {
                             regions[i] = Convert.ToInt32(regionsTemp[i]);
                         }
-                        Video video = new Video(id, temp[1], temp[2], length, regions);
-                        mediaList.Add(video);
+                        Video video = new Video(id, temp[1], temp[2], length, regions, genres);
+                        medias.Add(video);
                     }
                 }
             }
+        }
+
+        public void SearchByTitle(string title)
+        {
+            int count = 0;
+            var titleList = from media in medias
+                            where media.Title().ToLower().Contains(title.ToLower()) 
+                            select media;
+            foreach(Media m in titleList)
+            {
+                Console.WriteLine(m.Display());
+                count++;
+            }
+            Console.WriteLine("\n-----------------\n\nTotal Search Results: " + count + "\n\n-----------------\n");
+        }
+
+        public void SearchByGenre(string genre)
+        {
+            int count = 0;
+            var genreList = from media in medias
+                            where media.Genres().ToLower().Contains(genre.ToLower())
+                            select media;
+            foreach(Media m in genreList)
+            {
+                Console.WriteLine(m.Display());
+                count++;
+            }
+            Console.WriteLine("\n-----------------\n\nTotal Search Results: " + count + "\n\n-----------------\n");
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

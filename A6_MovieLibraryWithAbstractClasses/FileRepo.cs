@@ -19,7 +19,7 @@ namespace A6_MovieLibraryWithAbstractClasses
         {
             List<Movie> movies = new List<Movie>();
             FileRepo movieFile = new FileRepo("movies.csv");
-            mediaList.mediaList.Add(movie);
+            mediaList.medias.Add(movie);
 
             if (File.Exists(movieFile.Path))
             {
@@ -48,7 +48,7 @@ namespace A6_MovieLibraryWithAbstractClasses
             {
                 foreach (Movie media in movies)
                 {
-                    string temp = media.id + "," + media.title + "," + string.Join("|", media.genre);
+                    string temp = media.id + "," + media.title + "," + string.Join("|", media.genres);
                     outputFile.WriteLine(temp);
                 }
                 outputFile.Close();
@@ -58,7 +58,7 @@ namespace A6_MovieLibraryWithAbstractClasses
         public void ReadFile(MediaList mediaList, Type type)
         {            
             Console.WriteLine();
-            foreach (Media m in mediaList.mediaList)
+            foreach (Media m in mediaList.medias)
             {
                 if(m.GetType() == type)
                 {
